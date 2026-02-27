@@ -1,12 +1,42 @@
+<div align="center">
+
 # Jules CLI
 
-A command-line interface for the Jules REST API.
+**A command-line interface for the Jules REST API.**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+
+</div>
 
 ## Installation
 
-### Option 1: Using uv (recommended, faster)
+| Use Case | Recommended Method |
+|----------|-------------------|
+| **End Users** | [Quick Install (One-Liner)](#quick-install-one-liner) ⭐ |
+| **Contributors** | [Manual Clone with uv](#manual-clone-with-uv-recommended-for-development) |
+| **Without uv** | [Manual Clone with pip](#manual-clone-with-pip-traditional) |
 
-[uv](https://github.com/astral-sh/uv) is a fast Python package manager and installer.
+### Quick Install (One-Liner) ⭐
+
+```bash
+curl -sSL https://raw.githubusercontent.com/yourusername/jules-cli/main/install.sh | bash
+```
+
+This will:
+- Install [uv](https://github.com/astral-sh/uv) if not present
+- Clone the repository to `~/.jules-cli/jules-cli`
+- Set up a virtual environment
+- Install the package
+- Create the `jules` command in `~/.local/bin`
+
+> **Note:** Make sure `~/.local/bin` is in your PATH.
+
+---
+
+## Alternative Installation Methods
+
+### Manual Clone with uv (Recommended for Development)
 
 ```bash
 # Install uv (if not already installed)
@@ -21,9 +51,12 @@ uv pip install -e .
 
 # Or install with development dependencies
 uv pip install -e ".[dev]"
+
+# Create symlink to use globally
+ln -sf "$(pwd)/jules-uv" ~/.local/bin/jules
 ```
 
-### Option 2: Using pip (traditional)
+### Manual Clone with pip (Traditional)
 
 ```bash
 # Clone the repository
@@ -37,7 +70,7 @@ pip install -e .
 pip install -e ".[dev]"
 ```
 
-### From PyPI (when published)
+### From PyPI (When Published)
 
 ```bash
 # Using uv

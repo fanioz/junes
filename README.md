@@ -4,7 +4,26 @@ A command-line interface for the Jules REST API.
 
 ## Installation
 
-### From source
+### Option 1: Using uv (recommended, faster)
+
+[uv](https://github.com/astral-sh/uv) is a fast Python package manager and installer.
+
+```bash
+# Install uv (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Clone the repository
+git clone https://github.com/yourusername/jules-cli.git
+cd jules-cli
+
+# Install in development mode
+uv pip install -e .
+
+# Or install with development dependencies
+uv pip install -e ".[dev]"
+```
+
+### Option 2: Using pip (traditional)
 
 ```bash
 # Clone the repository
@@ -18,9 +37,13 @@ pip install -e .
 pip install -e ".[dev]"
 ```
 
-### Using pip (when published)
+### From PyPI (when published)
 
 ```bash
+# Using uv
+uv pip install jules-cli
+
+# Using pip
 pip install jules-cli
 ```
 
@@ -111,6 +134,19 @@ jules --verbose sources list
 
 ### Run tests
 
+**Using uv (recommended):**
+```bash
+# Run all tests
+uv run pytest
+
+# Run with coverage
+uv run pytest --cov=jules_cli --cov-report=html
+
+# Run specific test file
+uv run pytest tests/test_client.py
+```
+
+**Using pytest directly:**
 ```bash
 # Run all tests
 pytest

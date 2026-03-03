@@ -1,0 +1,3 @@
+## 2024-05-24 - CLI Startup Performance Bottlenecks
+**Learning:** Python CLI tools built with `click` can suffer significant startup delays (e.g., when running `jules --help`) if heavy dependencies like `requests` and `tabulate` are imported at the top level of the command definition file. `click` has to parse the entire file to register commands before executing anything, forcing all imports to resolve.
+**Action:** Always defer imports of heavy libraries into the specific `click` command functions that require them. This ensures the CLI framework can initialize and serve help text or parse arguments almost instantly.

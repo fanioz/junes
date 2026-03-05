@@ -5,10 +5,6 @@ import sys
 import click
 
 from jules_cli import __version__
-from jules_cli.client import JulesAPIClient
-from jules_cli.config import ConfigManager
-from jules_cli.exceptions import ConfigurationError, JulesAPIError
-from jules_cli.formatter import OutputFormatter
 
 
 @click.group(invoke_without_command=True)
@@ -47,13 +43,17 @@ def cli(ctx, api_key, format, verbose):
     ctx.obj["format"] = format.lower()
     ctx.obj["verbose"] = verbose
 
+    # Lazy imports to speed up CLI startup time
+    from jules_cli.config import ConfigManager
+    from jules_cli.exceptions import ConfigurationError
+
     # Get the actual API key using priority: CLI > ENV > Config
     if api_key is None:
         try:
             config_manager = ConfigManager()
             actual_api_key = config_manager.get_api_key(cli_arg_key=None)
             ctx.obj["actual_api_key"] = actual_api_key
-        except ConfigurationError as e:
+        except ConfigurationError:
             # Don't fail immediately - commands might not need API key
             ctx.obj["actual_api_key"] = None
     else:
@@ -80,6 +80,12 @@ def sources_list(ctx):
     if not api_key:
         click.echo("Error: API key not found. Use --api-key, JULES_API_KEY env var, or 'jules config init'", err=True)
         sys.exit(1)
+
+    # Lazy imports to speed up CLI startup time
+    # Lazy imports to speed up CLI startup time
+    from jules_cli.client import JulesAPIClient
+    from jules_cli.formatter import OutputFormatter
+    from jules_cli.exceptions import JulesAPIError
 
     try:
         client = JulesAPIClient(api_key=api_key, verbose=ctx.obj.get("verbose", False))
@@ -117,6 +123,11 @@ def sessions_create(ctx, prompt, title, source, branch, require_approval, auto_p
     if not api_key:
         click.echo("Error: API key not found. Use --api-key, JULES_API_KEY env var, or 'jules config init'", err=True)
         sys.exit(1)
+
+    # Lazy imports to speed up CLI startup time
+    from jules_cli.client import JulesAPIClient
+    from jules_cli.formatter import OutputFormatter
+    from jules_cli.exceptions import JulesAPIError
 
     try:
         client = JulesAPIClient(api_key=api_key, verbose=ctx.obj.get("verbose", False))
@@ -157,6 +168,11 @@ def sessions_list(ctx, status, page_size, page_token):
         click.echo("Error: API key not found. Use --api-key, JULES_API_KEY env var, or 'jules config init'", err=True)
         sys.exit(1)
 
+    # Lazy imports to speed up CLI startup time
+    from jules_cli.client import JulesAPIClient
+    from jules_cli.formatter import OutputFormatter
+    from jules_cli.exceptions import JulesAPIError
+
     try:
         client = JulesAPIClient(api_key=api_key, verbose=ctx.obj.get("verbose", False))
         formatter = OutputFormatter(ctx.obj.get("format", "plain"))
@@ -190,6 +206,11 @@ def sessions_get(ctx, session_id):
         click.echo("Error: API key not found. Use --api-key, JULES_API_KEY env var, or 'jules config init'", err=True)
         sys.exit(1)
 
+    # Lazy imports to speed up CLI startup time
+    from jules_cli.client import JulesAPIClient
+    from jules_cli.formatter import OutputFormatter
+    from jules_cli.exceptions import JulesAPIError
+
     try:
         client = JulesAPIClient(api_key=api_key, verbose=ctx.obj.get("verbose", False))
         formatter = OutputFormatter(ctx.obj.get("format", "plain"))
@@ -219,6 +240,11 @@ def sessions_delete(ctx, session_id, yes):
     if not yes:
         click.confirm(f"Are you sure you want to delete session {session_id}?", abort=True)
 
+    # Lazy imports to speed up CLI startup time
+    from jules_cli.client import JulesAPIClient
+    from jules_cli.formatter import OutputFormatter
+    from jules_cli.exceptions import JulesAPIError
+
     try:
         client = JulesAPIClient(api_key=api_key, verbose=ctx.obj.get("verbose", False))
 
@@ -242,10 +268,15 @@ def sessions_approve(ctx, session_id):
         click.echo("Error: API key not found. Use --api-key, JULES_API_KEY env var, or 'jules config init'", err=True)
         sys.exit(1)
 
+    # Lazy imports to speed up CLI startup time
+    from jules_cli.client import JulesAPIClient
+    from jules_cli.formatter import OutputFormatter
+    from jules_cli.exceptions import JulesAPIError
+
     try:
         client = JulesAPIClient(api_key=api_key, verbose=ctx.obj.get("verbose", False))
 
-        data = client.approve_plan(session_id)
+        client.approve_plan(session_id)
         click.echo(f"Plan approved for session {session_id}")
 
     except JulesAPIError as e:
@@ -271,6 +302,11 @@ def activities_list(ctx, session_id):
     if not api_key:
         click.echo("Error: API key not found. Use --api-key, JULES_API_KEY env var, or 'jules config init'", err=True)
         sys.exit(1)
+
+    # Lazy imports to speed up CLI startup time
+    from jules_cli.client import JulesAPIClient
+    from jules_cli.formatter import OutputFormatter
+    from jules_cli.exceptions import JulesAPIError
 
     try:
         client = JulesAPIClient(api_key=api_key, verbose=ctx.obj.get("verbose", False))
@@ -308,6 +344,11 @@ def agent_send(ctx, session_id, message):
     if message is None:
         message = sys.stdin.read()
 
+    # Lazy imports to speed up CLI startup time
+    from jules_cli.client import JulesAPIClient
+    from jules_cli.formatter import OutputFormatter
+    from jules_cli.exceptions import JulesAPIError
+
     try:
         client = JulesAPIClient(api_key=api_key, verbose=ctx.obj.get("verbose", False))
         formatter = OutputFormatter(ctx.obj.get("format", "plain"))
@@ -342,6 +383,8 @@ def config(ctx):
 @click.pass_context
 def config_init(ctx, api_key, format):
     """Initialize configuration file."""
+    # Lazy imports to speed up CLI startup time
+    from jules_cli.config import ConfigManager
     try:
         config_manager = ConfigManager()
         config_manager.init_config(api_key=api_key, format=format.lower())

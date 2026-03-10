@@ -1,4 +1,10 @@
-"""CLI command definitions."""
+"""CLI command definitions.
+
+Performance Note: This module uses lazy imports for JulesAPIClient and
+OutputFormatter to minimize CLI startup time. These heavy dependencies
+(through requests and tabulate) are only imported when actually needed
+by sub-commands, not when displaying help or version information.
+"""
 
 import sys
 
@@ -51,7 +57,7 @@ def cli(ctx, api_key, format, verbose):
             config_manager = ConfigManager()
             actual_api_key = config_manager.get_api_key(cli_arg_key=None)
             ctx.obj["actual_api_key"] = actual_api_key
-        except ConfigurationError as e:
+        except ConfigurationError:
             # Don't fail immediately - commands might not need API key
             ctx.obj["actual_api_key"] = None
     else:

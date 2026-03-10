@@ -1,12 +1,12 @@
 ---
-name: jules-cli
-description: Use when the user mentions jules-cli, Jules REST API, or needs to perform Jules operations like listing sources, creating sessions, managing activities, sending agent messages, or configuring API credentials. Trigger symptoms: asks about jules commands, Jules API interactions, session management, or authentication issues with jules-cli. Includes error messages like "Authentication failed" or "Resource not found".
+name: junes
+description: Use when the user mentions junes, Jules REST API, or needs to perform Jules operations like listing sources, creating sessions, managing activities, sending agent messages, or configuring API credentials. Trigger symptoms: asks about junes commands, Jules API interactions, session management, or authentication issues with junes. Includes error messages like "Authentication failed" or "Resource not found".
 compatibility:
   tools:
     - Bash
   requirements:
-    - jules-cli must be installed and available in PATH
-    - API key configured via jules config init, JULES_API_KEY env var, or --api-key option
+    - junes must be installed and available in PATH
+    - API key configured via junes config init, JULES_API_KEY env var, or --api-key option
 ---
 
 # Jules CLI Skill

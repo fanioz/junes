@@ -4,7 +4,7 @@ from click.testing import CliRunner
 from pathlib import Path
 from unittest import mock
 
-from jules_cli.cli import cli
+from junes.cli import cli
 
 
 class TestConfigInitCommand:
@@ -26,7 +26,7 @@ class TestConfigInitCommand:
 
         with runner.isolated_filesystem():
             # Mock the home directory to use temp directory
-            with mock.patch("jules_cli.config.Path.home") as mock_home:
+            with mock.patch("junes.config.Path.home") as mock_home:
                 mock_home.return_value = Path(".")
                 result = runner.invoke(cli, ["config", "init"], input="test-key\njson\n")
 
@@ -38,7 +38,7 @@ class TestConfigInitCommand:
         runner = CliRunner()
 
         with runner.isolated_filesystem():
-            with mock.patch("jules_cli.config.Path.home") as mock_home:
+            with mock.patch("junes.config.Path.home") as mock_home:
                 mock_home.return_value = Path(".")
                 result = runner.invoke(cli, ["config", "init", "--api-key", "key123", "--format", "table"])
 

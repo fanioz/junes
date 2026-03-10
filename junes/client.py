@@ -4,7 +4,7 @@ import logging
 import re
 from typing import Optional
 
-from jules_cli.constants import (
+from junes.constants import (
     API_KEY_HEADER,
     BASE_URL,
     CONTENT_TYPE_HEADER,
@@ -16,7 +16,7 @@ from jules_cli.constants import (
     SESSIONS_ENDPOINT,
     SOURCES_ENDPOINT,
 )
-from jules_cli.exceptions import (
+from junes.exceptions import (
     AuthenticationError,
     NetworkError,
     RateLimitError,

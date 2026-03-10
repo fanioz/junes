@@ -8,9 +8,9 @@ from hypothesis import strategies as st
 
 import responses
 
-from jules_cli.client import JulesAPIClient
-from jules_cli.constants import BASE_URL, API_KEY_HEADER
-from jules_cli.exceptions import ServerError
+from junes.client import JulesAPIClient
+from junes.constants import BASE_URL, API_KEY_HEADER
+from junes.exceptions import ServerError
 
 
 class TestAPIKeyHeaderInclusionProperty:
@@ -100,7 +100,7 @@ class TestVerboseHTTPLoggingProperty:
                 status=200,
             )
 
-            with mock.patch("jules_cli.client.logger") as mock_logger:
+            with mock.patch("junes.client.logger") as mock_logger:
                 client = JulesAPIClient(api_key="test-key", verbose=True)
                 client._make_request(method, f"/{endpoint}")
 
@@ -124,7 +124,7 @@ class TestAPIKeyRedactionProperty:
                 status=200,
             )
 
-            with mock.patch("jules_cli.client.logger") as mock_logger:
+            with mock.patch("junes.client.logger") as mock_logger:
                 client = JulesAPIClient(api_key=api_key, verbose=True)
                 client._make_request("GET", "/test")
 

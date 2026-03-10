@@ -7,8 +7,8 @@ from hypothesis import strategies as st
 
 import responses
 
-from jules_cli.cli import cli
-from jules_cli.constants import BASE_URL
+from junes.cli import cli
+from junes.constants import BASE_URL
 
 
 class TestOptionalParameterPassThroughProperty:

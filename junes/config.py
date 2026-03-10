@@ -4,7 +4,7 @@ import os
 import sys
 from pathlib import Path
 
-from jules_cli.exceptions import ConfigurationError
+from junes.exceptions import ConfigurationError
 
 # Handle TOML for different Python versions
 if sys.version_info >= (3, 11):
@@ -29,7 +29,7 @@ class ConfigManager:
 
     def __init__(self):
         """Initialize the ConfigManager."""
-        self.config_dir = Path.home() / ".jules-cli"
+        self.config_dir = Path.home() / ".junes"
         self.config_file = self.config_dir / "config.toml"
 
     def init_config(self, api_key: str, format: str = "plain") -> None:

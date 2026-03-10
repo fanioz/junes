@@ -8,7 +8,7 @@ from unittest import mock
 from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
-from jules_cli.config import ConfigManager
+from junes.config import ConfigManager
 
 
 class TestAPIKeyPriorityProperty:
@@ -23,12 +23,12 @@ class TestAPIKeyPriorityProperty:
     def test_cli_arg_overrides_env_and_config(self, cli_key, env_key, config_key):
         """CLI argument should always be returned when provided, regardless of ENV and config."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            with mock.patch("jules_cli.config.Path.home", return_value=Path(tmpdir)):
+            with mock.patch("junes.config.Path.home", return_value=Path(tmpdir)):
                 config_manager = ConfigManager()
                 config_manager.init_config(api_key=config_key, format="json")
 
-            with mock.patch("jules_cli.config.Path.home", return_value=Path(tmpdir)):
-                with mock.patch("jules_cli.config.Path.home", return_value=Path(tmpdir)):
+            with mock.patch("junes.config.Path.home", return_value=Path(tmpdir)):
+                with mock.patch("junes.config.Path.home", return_value=Path(tmpdir)):
                     config_manager = ConfigManager()
 
                 with mock.patch.dict(os.environ, {"JULES_API_KEY": env_key}):
@@ -43,12 +43,12 @@ class TestAPIKeyPriorityProperty:
     def test_env_overrides_config_when_no_cli(self, env_key, config_key):
         """ENV variable should be returned when CLI arg not provided, overriding config."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            with mock.patch("jules_cli.config.Path.home", return_value=Path(tmpdir)):
+            with mock.patch("junes.config.Path.home", return_value=Path(tmpdir)):
                 config_manager = ConfigManager()
                 config_manager.init_config(api_key=config_key, format="json")
 
-            with mock.patch("jules_cli.config.Path.home", return_value=Path(tmpdir)):
-                with mock.patch("jules_cli.config.Path.home", return_value=Path(tmpdir)):
+            with mock.patch("junes.config.Path.home", return_value=Path(tmpdir)):
+                with mock.patch("junes.config.Path.home", return_value=Path(tmpdir)):
                     config_manager = ConfigManager()
 
                 with mock.patch.dict(os.environ, {"JULES_API_KEY": env_key}):
@@ -68,12 +68,12 @@ class TestConfigPersistenceProperty:
         """Configuration written by one ConfigManager instance should be readable by another."""
         with tempfile.TemporaryDirectory() as tmpdir:
             # First instance writes config
-            with mock.patch("jules_cli.config.Path.home", return_value=Path(tmpdir)):
+            with mock.patch("junes.config.Path.home", return_value=Path(tmpdir)):
                 cm1 = ConfigManager()
                 cm1.init_config(api_key=api_key, format=format)
 
             # Second instance reads config
-            with mock.patch("jules_cli.config.Path.home", return_value=Path(tmpdir)):
+            with mock.patch("junes.config.Path.home", return_value=Path(tmpdir)):
                 cm2 = ConfigManager()
                 loaded = cm2.load_config()
 
@@ -87,7 +87,7 @@ class TestConfigValidationProperty:
     def test_valid_config_always_passes_validation(self):
         """Any configuration with required fields and valid values should pass validation."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            with mock.patch("jules_cli.config.Path.home", return_value=Path(tmpdir)):
+            with mock.patch("junes.config.Path.home", return_value=Path(tmpdir)):
                 cm = ConfigManager()
                 assert cm.validate_config({"api_key": "key", "format": "json"}) is True
                 assert cm.validate_config({"api_key": "key", "format": "table"}) is True
@@ -97,7 +97,7 @@ class TestConfigValidationProperty:
     def test_invalid_config_always_fails_validation(self):
         """Configurations missing required fields or with invalid values should fail validation."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            with mock.patch("jules_cli.config.Path.home", return_value=Path(tmpdir)):
+            with mock.patch("junes.config.Path.home", return_value=Path(tmpdir)):
                 cm = ConfigManager()
                 # Missing api_key
                 assert cm.validate_config({"format": "json"}) is False

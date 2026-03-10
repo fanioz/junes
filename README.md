@@ -20,15 +20,15 @@
 ### Quick Install (One-Liner) ⭐
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/fanioz/jules-cli/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/fanioz/junes/main/install.sh | bash
 ```
 
 This will:
 - Install [uv](https://github.com/astral-sh/uv) if not present
-- Clone the repository to `~/.jules-cli/jules-cli`
+- Clone the repository to `~/.junes/junes`
 - Set up a virtual environment
 - Install the package
-- Create the `jules` command in `~/.local/bin`
+- Create the `junes` command in `~/.local/bin`
 
 > **Note:** Make sure `~/.local/bin` is in your PATH.
 
@@ -43,8 +43,8 @@ This will:
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Clone the repository
-git clone https://github.com/fanioz/jules-cli.git
-cd jules-cli
+git clone https://github.com/fanioz/junes.git
+cd junes
 
 # Install in development mode
 uv pip install -e .
@@ -53,15 +53,15 @@ uv pip install -e .
 uv pip install -e ".[dev]"
 
 # Create symlink to use globally
-ln -sf "$(pwd)/jules-uv" ~/.local/bin/jules
+ln -sf "$(pwd)/junes-uv" ~/.local/bin/junes
 ```
 
 ### Manual Clone with pip (Traditional)
 
 ```bash
 # Clone the repository
-git clone https://github.com/fanioz/jules-cli.git
-cd jules-cli
+git clone https://github.com/fanioz/junes.git
+cd junes
 
 # Install in development mode
 pip install -e .
@@ -70,81 +70,83 @@ pip install -e .
 pip install -e ".[dev]"
 ```
 
-### From PyPI (When Published)
+### From PyPI
 
 ```bash
 # Using uv
-uv pip install jules-cli
+uv pip install junes
 
 # Using pip
-pip install jules-cli
+pip install junes
 ```
+
+**Note:** The PyPI package is named `junes`, but the CLI command is `junes`. This naming avoids conflicts with existing PyPI packages.
 
 ## Configuration
 
 ### Initialize configuration
 
 ```bash
-jules config init
+junes config init
 ```
 
-This will create a configuration file at `~/.jules-cli/config.toml` and prompt for your API key.
+This will create a configuration file at `~/.junes/config.toml` and prompt for your API key.
 
 ### API Key
 
 The API key can be provided in three ways (in order of priority):
 
-1. **CLI option**: `jules --api-key YOUR_KEY sources list`
+1. **CLI option**: `junes --api-key YOUR_KEY sources list`
 2. **Environment variable**: Export `JULES_API_KEY=YOUR_KEY`
-3. **Config file**: Set via `jules config init`
+3. **Config file**: Set via `junes config init`
 
 ## Usage
 
 ### List sources
 
 ```bash
-jules sources list
-jules sources list --format json
-jules sources list --format table
+junes sources list
+junes sources list --format json
+junes sources list --format table
 ```
 
 ### Create a session
 
 ```bash
-jules sessions create <source-id>
-jules sessions create <source-id> --format json
+junes sessions create <source-id>
+junes sessions create <source-id> --format json
 ```
 
 ### List sessions
 
 ```bash
-jules sessions list
-jules sessions list --status active
+junes sessions list
+junes sessions list --status active
 ```
 
 ### Get session details
 
 ```bash
-jules sessions get <session-id>
+junes sessions get <session-id>
 ```
 
 ### Approve a plan
 
 ```bash
-jules sessions approve <session-id>
+junes sessions approve <session-id>
 ```
 
 ### List activities
 
 ```bash
-jules activities list <session-id>
+junes activities list <session-id>
 ```
 
 ### Send a message to the agent
 
 ```bash
-jules agent send <session-id> "Your message here"
-echo "Your message" | jules agent send <session-id>
+junes agent send <session-id> "Your message here"
+echo "Your message" | junes agent send <session-id>
 ```
 
 ## Output Formats
@@ -160,7 +162,7 @@ All commands support three output formats:
 Enable verbose logging to see HTTP request details:
 
 ```bash
-jules --verbose sources list
+junes --verbose sources list
 ```
 
 ## Development
@@ -173,7 +175,7 @@ jules --verbose sources list
 uv run pytest
 
 # Run with coverage
-uv run pytest --cov=jules_cli --cov-report=html
+uv run pytest --cov=junes --cov-report=html
 
 # Run specific test file
 uv run pytest tests/test_client.py
@@ -185,7 +187,7 @@ uv run pytest tests/test_client.py
 pytest
 
 # Run with coverage
-pytest --cov=jules_cli --cov-report=html
+pytest --cov=junes --cov-report=html
 
 # Run specific test file
 pytest tests/test_client.py

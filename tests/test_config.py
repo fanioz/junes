@@ -7,8 +7,8 @@ from unittest import mock
 
 import pytest
 
-from jules_cli.config import ConfigManager
-from jules_cli.exceptions import ConfigurationError
+from junes.config import ConfigManager
+from junes.exceptions import ConfigurationError
 
 
 class TestConfigManager:
@@ -23,11 +23,11 @@ class TestConfigManager:
     @pytest.fixture
     def config_manager(self, temp_config_dir):
         """Create a ConfigManager with a temp config directory."""
-        with mock.patch("jules_cli.config.Path.home", return_value=Path(temp_config_dir)):
+        with mock.patch("junes.config.Path.home", return_value=Path(temp_config_dir)):
             return ConfigManager()
 
     def test_init_config_creates_config_directory(self, config_manager):
-        """init_config should create the .jules-cli directory."""
+        """init_config should create the .junes directory."""
         config_dir = config_manager.config_dir
 
         # Ensure directory doesn't exist before
@@ -74,7 +74,7 @@ class TestConfigManager:
     def test_load_config_raises_error_if_file_missing(self, config_manager):
         """load_config should raise ConfigurationError if config file doesn't exist."""
         # Ensure config file doesn't exist
-        config_file = Path.home() / ".jules-cli" / "config.toml"
+        config_file = Path.home() / ".junes" / "config.toml"
         if config_file.exists():
             config_file.unlink()
 

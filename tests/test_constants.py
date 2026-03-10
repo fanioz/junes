@@ -1,7 +1,7 @@
 """Tests for API constants."""
 
 
-from jules_cli.constants import (
+from junes.constants import (
     BASE_URL,
     API_KEY_HEADER,
     CONTENT_TYPE_HEADER,

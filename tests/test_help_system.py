@@ -2,7 +2,7 @@
 
 from click.testing import CliRunner
 
-from jules_cli.cli import cli
+from junes.cli import cli
 
 
 class TestHelpSystem:

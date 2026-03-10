@@ -6,7 +6,7 @@ import time
 def test_cli_startup_time_under_threshold():
     """Ensure CLI startup time is under threshold for --help."""
     start = time.time()
-    result = subprocess.run(["jules", "--help"], capture_output=True, text=True)
+    result = subprocess.run(["junes", "--help"], capture_output=True, text=True)
     elapsed = time.time() - start
 
     assert result.returncode == 0

@@ -2,7 +2,7 @@
 
 from click.testing import CliRunner
 
-from jules_cli.cli import cli
+from junes.cli import cli
 
 
 class TestCLIGroup:
@@ -13,14 +13,14 @@ class TestCLIGroup:
         runner = CliRunner()
         result = runner.invoke(cli)
         assert result.exit_code == 0
-        assert "Usage:" in result.output or "jules" in result.output
+        assert "Usage:" in result.output or "junes" in result.output
 
     def test_version_flag(self):
         """--version flag should display version information."""
         runner = CliRunner()
         result = runner.invoke(cli, ["--version"])
         assert result.exit_code == 0
-        assert "0.1.1" in result.output
+        assert "2.0.0" in result.output
 
     def test_help_flag(self):
         """--help flag should display help information."""
@@ -78,7 +78,7 @@ class TestMissingAPIKey:
 
         # Clear environment and config file
         import os
-        from jules_cli.config import ConfigManager
+        from junes.config import ConfigManager
         env = os.environ.copy()
         env.pop("JULES_API_KEY", None)
         

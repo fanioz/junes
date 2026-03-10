@@ -2,7 +2,7 @@
 
 import pytest
 
-from jules_cli.exceptions import (
+from junes.exceptions import (
     JulesAPIError,
     AuthenticationError,
     ResourceNotFoundError,

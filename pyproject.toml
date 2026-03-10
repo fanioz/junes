@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "junes"
-version = "1.0.2"
+version = "2.0.0"
 description = "junes: the Jules CLI"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -40,23 +40,23 @@ dev = [
 ]
 
 [project.scripts]
-jules = "jules_cli.cli:cli"
+junes = "junes.cli:cli"
 
 [project.urls]
 Homepage = "https://github.com/fanioz/jules-cli"
 Repository = "https://github.com/fanioz/jules-cli"
 
 [tool.setuptools]
-packages = ["jules_cli"]
+packages = ["junes"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
-addopts = "-v --cov=jules_cli --cov-report=term-missing --cov-report=html"
+addopts = "-v --cov=junes --cov-report=term-missing --cov-report=html"
 
 [tool.coverage.run]
-source = ["jules_cli"]
+source = ["junes"]
 omit = ["*/tests/*", "*/__pycache__/*"]
 
 [tool.coverage.report]

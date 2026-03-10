@@ -6,7 +6,7 @@ from datetime import datetime
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
-from jules_cli.formatter import OutputFormatter
+from junes.formatter import OutputFormatter
 
 
 class TestCompleteFieldDisplayProperty:

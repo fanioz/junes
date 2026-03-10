@@ -5,7 +5,7 @@ from click.testing import CliRunner
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
-from jules_cli.cli import cli
+from junes.cli import cli
 
 
 class TestExitCodeCorrectnessProperty:

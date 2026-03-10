@@ -5,8 +5,8 @@ from unittest import mock
 
 import responses
 
-from jules_cli.cli import cli
-from jules_cli.constants import BASE_URL
+from junes.cli import cli
+from junes.constants import BASE_URL
 
 
 class TestVerboseMode:
@@ -23,7 +23,7 @@ class TestVerboseMode:
 
         runner = CliRunner()
 
-        with mock.patch("jules_cli.client.logger"):
+        with mock.patch("junes.client.logger"):
             result = runner.invoke(cli, ["--api-key", "test-key", "--verbose", "sources", "list"])
 
             # With verbose, logger should be called
@@ -95,7 +95,7 @@ class TestAPIKeyRedactionInVerboseMode:
 
         runner = CliRunner()
 
-        with mock.patch("jules_cli.client.logger") as mock_logger:
+        with mock.patch("junes.client.logger") as mock_logger:
             result = runner.invoke(cli, ["--api-key", "secret-key-12345", "--verbose", "sources", "list"])
 
             # If logger was called, check that API key was redacted

@@ -9,9 +9,9 @@ from requests.exceptions import Timeout
 
 import responses
 
-from jules_cli.client import JulesAPIClient
-from jules_cli.constants import BASE_URL
-from jules_cli.exceptions import (
+from junes.client import JulesAPIClient
+from junes.constants import BASE_URL
+from junes.exceptions import (
     AuthenticationError,
     NetworkError,
     RateLimitError,

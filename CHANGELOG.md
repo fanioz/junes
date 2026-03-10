@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-03-10
+
+### Breaking Changes
+- **CLI command renamed**: `jules` → `junes`
+- **Python module renamed**: `jules_cli` → `junes`
+- **Config directory renamed**: `.jules-cli` → `.junes`
+
+### Migration Guide
+Users need to update their workflows:
+- **CLI command**: Replace `jules` with `junes` in all scripts
+- **Config directory**: Existing config in `~/.jules-cli/` will not be automatically migrated. Run `junes config init` to create new config at `~/.junes/`
+- **Python imports**: Update `from jules_cli` to `from junes` in any custom code
+
+### Added
+- Unified branding with consistent `junes` naming throughout
+- Better alignment between PyPI package name and CLI command
+- Improved project discoverability and user experience
+
+### Changed
+- Package now uses consistent naming: install `junes`, run `junes`
+- All documentation updated to reflect new command name
+- Test imports updated to use new module name
+
+### Fixed
+- Eliminated naming confusion (previously: install `junes`, run `jules`)
+- Improved user experience with intuitive command name matching package name
+
 ## [1.0.2] - 2026-03-10
 
 ### Fixed

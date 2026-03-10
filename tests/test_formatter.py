@@ -3,7 +3,7 @@
 import json
 
 
-from jules_cli.formatter import OutputFormatter
+from junes.formatter import OutputFormatter
 
 
 class TestOutputFormatterInit:

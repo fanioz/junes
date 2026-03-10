@@ -3,16 +3,16 @@ requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "jules-cli"
-version = "1.0.0"
-description = "A command-line interface for the Jules REST API"
+name = "junes"
+version = "1.0.1"
+description = "junes: the Jules CLI"
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [
     {name = "fanioz", email = "1700770+fanioz@users.noreply.github.com"}
 ]
-keywords = ["jules", "cli", "api", "rest"]
+keywords = ["junes", "jules", "cli", "api", "rest", "anthropic"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",

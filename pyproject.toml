@@ -4,17 +4,17 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "jules-cli"
-version = "0.1.1"
+version = "1.0.0"
 description = "A command-line interface for the Jules REST API"
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [
-    {name = "Your Name", email = "your.email@example.com"}
+    {name = "fanioz", email = "1700770+fanioz@users.noreply.github.com"}
 ]
 keywords = ["jules", "cli", "api", "rest"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
@@ -43,8 +43,8 @@ dev = [
 jules = "jules_cli.cli:cli"
 
 [project.urls]
-Homepage = "https://github.com/yourusername/jules-cli"
-Repository = "https://github.com/yourusername/jules-cli"
+Homepage = "https://github.com/fanioz/jules-cli"
+Repository = "https://github.com/fanioz/jules-cli"
 
 [tool.setuptools]
 packages = ["jules_cli"]

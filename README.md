@@ -110,6 +110,12 @@ junes sources list --format json
 junes sources list --format table
 ```
 
+### Get source details
+
+```bash
+junes sources get <source-id>
+```
+
 ### Create a session
 
 ```bash
@@ -122,6 +128,7 @@ junes sessions create <source-id> --format json
 ```bash
 junes sessions list
 junes sessions list --status active
+junes sessions list --source sources/github/org/repo
 ```
 
 ### Get session details

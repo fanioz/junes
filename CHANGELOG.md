@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-03-20
+
+### Added
+- **`sources get` command**: Fetch and display detailed information about a specific source (repository).
+- **Session source filtering**: Added `--source` (`-s`) filter to `sessions list` to view sessions associated with a specific project.
+- **Enhanced documentation**: Comprehensive guide for new commands and filtering in `docs/SKILL.md`.
+- **Improved test coverage**: Added thorough test cases for source retrieval and session filtering logic.
+
 ## [2.0.0] - 2026-03-10
 
 ### Breaking Changes

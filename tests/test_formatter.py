@@ -55,6 +55,44 @@ class TestFormatSources:
         assert "src1" in result or "Source 1" in result
 
 
+class TestFormatSourceDetails:
+    """Tests for format_source_details method."""
+
+    def test_format_source_details_json_returns_valid_json(self):
+        """format_source_details should return valid JSON when format is json."""
+        formatter = OutputFormatter("json")
+        data = {"id": "src1", "name": "Source 1"}
+
+        result = formatter.format_source_details(data)
+
+        parsed = json.loads(result)
+        assert parsed == data
+
+    def test_format_source_details_plain_returns_text(self):
+        """format_source_details should return plain text when format is plain."""
+        formatter = OutputFormatter("plain")
+        data = {
+            "id": "src1",
+            "name": "sources/src1",
+            "githubRepo": {
+                "owner": "owner1",
+                "repo": "repo1",
+                "defaultBranch": {"displayName": "main"},
+                "branches": [{"displayName": "main"}, {"displayName": "dev"}]
+            }
+        }
+
+        result = formatter.format_source_details(data)
+
+        assert isinstance(result, str)
+        assert "Source Details:" in result
+        assert "sources/src1" in result
+        assert "owner1" in result
+        assert "repo1" in result
+        assert "main" in result
+        assert "dev" in result
+
+
 class TestFormatSessions:
     """Tests for format_sessions method."""
 

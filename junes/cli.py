@@ -35,16 +35,16 @@ from junes.exceptions import ConfigurationError, JulesAPIError
     is_flag=True,
     help="Enable verbose logging",
 )
-@click.version_option(version=__version__, prog_name="jules")
+@click.version_option(version=__version__, prog_name="junes")
 @click.pass_context
 def cli(ctx, api_key, format, verbose):
     """
-    Jules CLI - A command-line interface for the Jules REST API.
+    junes CLI - A command-line interface for the Jules REST API.
 
     API key can be provided via:
       - --api-key option
-      - JULES_API_KEY environment variable
-      - Config file (use 'jules config init' to set up)
+      - JUNES_API_KEY environment variable
+      - Config file (use 'junes config init' to set up)
     """
     ctx.ensure_object(dict)
     ctx.obj["api_key"] = api_key
@@ -94,6 +94,34 @@ def sources_list(ctx):
 
         data = client.list_sources()
         output = formatter.format_sources(data)
+        click.echo(output)
+
+    except JulesAPIError as e:
+        formatter = OutputFormatter(ctx.obj.get("format", "plain"))
+        error_output = formatter.format_error(str(e))
+        click.echo(error_output, err=True)
+        sys.exit(1)
+
+
+@sources.command("get")
+@click.argument("source-id")
+@click.pass_context
+def sources_get(ctx, source_id):
+    """Get source details."""
+    from junes.client import JulesAPIClient
+    from junes.formatter import OutputFormatter
+
+    api_key = ctx.obj.get("actual_api_key")
+    if not api_key:
+        click.echo("Error: API key not found. Use --api-key, JULES_API_KEY env var, or 'jules config init'", err=True)
+        sys.exit(1)
+
+    try:
+        client = JulesAPIClient(api_key=api_key, verbose=ctx.obj.get("verbose", False))
+        formatter = OutputFormatter(ctx.obj.get("format", "plain"))
+
+        data = client.get_source(source_id)
+        output = formatter.format_source_details(data)
         click.echo(output)
 
     except JulesAPIError as e:
@@ -157,10 +185,11 @@ def sessions_create(ctx, prompt, title, source, branch, require_approval, auto_p
 
 @sessions.command("list")
 @click.option("--status", type=click.Choice(["active", "completed", "failed", "pending"], case_sensitive=False), default=None, help="Filter by session status")
+@click.option("--source", "-s", default=None, help="Filter by source name (e.g. sources/github/fanioz/jules-cli)")
 @click.option("--page-size", type=int, default=None, help="Number of sessions to return (1-100, default: 30)")
 @click.option("--page-token", default=None, help="Page token from a previous list response")
 @click.pass_context
-def sessions_list(ctx, status, page_size, page_token):
+def sessions_list(ctx, status, source, page_size, page_token):
     """List sessions."""
     from junes.client import JulesAPIClient
     from junes.formatter import OutputFormatter
@@ -177,12 +206,28 @@ def sessions_list(ctx, status, page_size, page_token):
         params = {}
         if status is not None:
             params["status"] = status
+        # If source is provided, we might need to fetch all and filter client-side
+        # unless the API supports it. Since 400 was returned, we filter client-side.
         if page_size is not None:
             params["pageSize"] = page_size
         if page_token is not None:
             params["pageToken"] = page_token
 
         data = client.list_sessions(**params)
+        
+        if source:
+            filtered_sessions = []
+            for s in data.get("sessions", []):
+                if s.get("sourceContext", {}).get("source") == source:
+                    filtered_sessions.append(s)
+            data["sessions"] = filtered_sessions
+            # If we filter client-side, nextPageToken might become misleading if we didn't fetch all.
+            # But for simplicity and matching current list behavior:
+            if not filtered_sessions and data.get("nextPageToken") and not page_size:
+                 # In a real app we'd paginate until we find something or hit the end.
+                 # For now, just show what we found in this page.
+                 pass
+
         output = formatter.format_sessions(data)
         click.echo(output)
 

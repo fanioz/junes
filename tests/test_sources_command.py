@@ -97,3 +97,63 @@ class TestSourcesListCommand:
         # Should show help for sources commands
         assert result.exit_code == 0
         assert "list" in result.output
+
+
+class TestSourcesGetCommand:
+    """Tests for 'sources get' command."""
+
+    @responses.activate
+    def test_sources_get_with_valid_api_key(self):
+        """sources get should display source details."""
+        responses.get(
+            f"{BASE_URL}/sources/src1",
+            json={
+                "id": "src1",
+                "name": "sources/src1",
+                "githubRepo": {
+                    "owner": "owner1",
+                    "repo": "repo1",
+                    "defaultBranch": {"displayName": "main"}
+                }
+            },
+            status=200,
+        )
+
+        runner = CliRunner()
+        result = runner.invoke(cli, ["--api-key", "test-key", "sources", "get", "src1"])
+
+        assert result.exit_code == 0
+        assert "sources/src1" in result.output
+        assert "owner1" in result.output
+        assert "repo1" in result.output
+
+    @responses.activate
+    def test_sources_get_json_format(self):
+        """sources get --format json should output valid JSON."""
+        responses.get(
+            f"{BASE_URL}/sources/src1",
+            json={"id": "src1", "name": "sources/src1"},
+            status=200,
+        )
+
+        runner = CliRunner()
+        result = runner.invoke(cli, ["--api-key", "test-key", "--format", "json", "sources", "get", "src1"])
+
+        assert result.exit_code == 0
+        assert '"id": "src1"' in result.output
+        assert '"name": "sources/src1"' in result.output
+
+    @responses.activate
+    def test_sources_get_not_found(self):
+        """sources get should handle 404 error."""
+        responses.get(
+            f"{BASE_URL}/sources/nonexistent",
+            json={"error": "Not found"},
+            status=404,
+        )
+
+        runner = CliRunner()
+        result = runner.invoke(cli, ["--api-key", "test-key", "sources", "get", "nonexistent"])
+
+        assert result.exit_code != 0
+        assert "not found" in result.output.lower()

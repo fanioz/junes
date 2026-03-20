@@ -15,6 +15,7 @@ from junes.constants import (
     SESSION_DETAIL_ENDPOINT,
     SESSIONS_ENDPOINT,
     SOURCES_ENDPOINT,
+    SOURCE_DETAIL_ENDPOINT,
 )
 from junes.exceptions import (
     AuthenticationError,
@@ -156,6 +157,26 @@ class JulesAPIClient:
             JulesAPIError: If the API request fails
         """
         return self._make_request("GET", SOURCES_ENDPOINT, params=params)
+
+    def get_source(self, source_id: str) -> dict:
+        """
+        Get source details.
+
+        Args:
+            source_id: The source ID (e.g. "github/myorg/myrepo")
+
+        Returns:
+            dict: Source details
+
+        Raises:
+            JulesAPIError: If the API request fails
+        """
+        # Ensure source_id is clean for the endpoint
+        if source_id.startswith("sources/"):
+            source_id = source_id[len("sources/"):]
+        
+        endpoint = SOURCE_DETAIL_ENDPOINT.format(source_id=source_id)
+        return self._make_request("GET", endpoint)
 
     def create_session(
         self,

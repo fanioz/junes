@@ -48,6 +48,44 @@ class OutputFormatter:
         lines = [f"Sources ({len(sources)}):"]
         for source in sources:
             lines.append(f"  - {source.get('name', source.get('id', 'Unknown'))}")
+
+        return "\n".join(lines)
+
+    def format_source_details(self, data: Dict[str, Any]) -> str:
+        """
+        Format source details.
+
+        Args:
+            data: API response data (Source object)
+
+        Returns:
+            str: Formatted output
+        """
+        if self.format == "json":
+            return json.dumps(data, indent=2)
+
+        name = data.get("name", "Unknown")
+        sid = data.get("id", "Unknown")
+        github = data.get("githubRepo", {})
+
+        lines = ["Source Details:"]
+        lines.append(f"  Name: {name}")
+        lines.append(f"  ID: {sid}")
+
+        if github:
+            lines.append("  GitHub Repository:")
+            lines.append(f"    Owner: {github.get('owner', 'Unknown')}")
+            lines.append(f"    Repo: {github.get('repo', 'Unknown')}")
+            lines.append(f"    Is Private: {github.get('isPrivate', False)}")
+            default_branch = github.get("defaultBranch", {}).get("displayName", "Unknown")
+            lines.append(f"    Default Branch: {default_branch}")
+
+            branches = github.get("branches", [])
+            if branches:
+                lines.append(f"    Branches ({len(branches)}):")
+                for branch in branches:
+                    lines.append(f"      - {branch.get('displayName', 'Unknown')}")
+
         return "\n".join(lines)
 
     def format_sessions(self, data: Dict[str, Any]) -> str:

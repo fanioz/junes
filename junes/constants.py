@@ -9,6 +9,7 @@ CONTENT_TYPE_HEADER = "content-type"
 
 # Endpoints
 SOURCES_ENDPOINT = "/sources"
+SOURCE_DETAIL_ENDPOINT = "/sources/{source_id}"
 SESSIONS_ENDPOINT = "/sessions"
 SESSION_DETAIL_ENDPOINT = "/sessions/{session_id}"
 SESSION_DELETE_ENDPOINT = "/sessions/{session_id}"

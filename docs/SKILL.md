@@ -1,243 +1,295 @@
 ---
 name: junes
-description: Use when the user mentions junes, Jules REST API, or needs to perform Jules operations like listing sources, creating sessions, managing activities, sending agent messages, or configuring API credentials. Trigger symptoms: asks about junes commands, Jules API interactions, session management, or authentication issues with junes. Includes error messages like "Authentication failed" or "Resource not found".
+description: Use when the user mentions junes, Jules REST API, or needs to perform Jules operations like listing sources, creating sessions, managing activities, sending agent messages, or configuring API credentials. Trigger symptoms: asks about junes commands, Jules API interactions, session management, or authentication issues. Error patterns: "Authentication failed", "Resource not found", "API key not found".
 compatibility:
   tools:
     - Bash
   requirements:
-    - junes must be installed and available in PATH
+    - junes must be installed and available in PATH (pip install junes)
     - API key configured via junes config init, JULES_API_KEY env var, or --api-key option
 ---
 
-# Jules CLI Skill
+# junes CLI
 
-Use this skill to interact with the Jules REST API through the jules-cli command-line tool.
+Command-line interface for the Jules REST API - manage coding sessions, sources, activities, and agent communication.
 
 ## Overview
 
-This skill enables Claude to perform all jules-cli operations:
-- List and manage sources
-- Create, list, get, and approve sessions
-- List and review activities
-- Send messages to the agent
-- Configure API credentials
+junes wraps the Jules REST API for programmatic session management and agent interaction.
+
+**Core pattern:** `junes [global-options] <category> <command> [args]`
+
+`★ Insight ─────────────────────────────────────`
+**Naming clarification:** The CLI tool is "junes" but the service is "Jules API". Environment variable `JULES_API_KEY` references the service name, not the CLI tool name.
+`─────────────────────────────────────────────────`
+
+## Quick Reference - Commands
+
+| Category | Command | Purpose |
+|----------|---------|---------|
+| **sessions** | `list` | List all sessions with optional filters |
+| **sessions** | `create` | Create new coding session |
+| **sessions** | `get` | Get session details |
+| **sessions** | `delete` | Delete a session |
+| **sessions** | `approve` | Approve pending plan |
+| **agent** | `send` | Send message to session |
+| **activities** | `list` | List session activities |
+| **sources** | `list` | List available sources |
+| **sources** | `get` | Get source details |
+| **config** | `init` | Set up configuration file |
 
 ## Quick Start
 
-First, ensure the user has configured their API key:
-
-```bash
-jules config init
-```
-
-If the API key is not configured, check for the `JULES_API_KEY` environment variable or prompt the user to provide it.
-
-## Core Capabilities
-
-### 1. Sources Management
-
-**List available sources:**
-
-```bash
-jules sources list
-jules --format json sources list    # For parsing
-jules --format table sources list   # For display
-jules --format plain sources list   # Default
-```
-
-**Note:** Global options like `--format` and `--api-key` must come **before** the subcommand.
-
-### 2. Session Management
-
-**Create a new session:**
-
-```bash
-jules sessions create <source-id>
-jules sessions create <source-id> --parameter key=value
-jules sessions create <source-id> -p key1=value1 -p key2=value2
-```
-
-When creating a session, capture the returned session ID for subsequent operations.
-
-**List sessions:**
-
-```bash
-jules sessions list
-jules sessions list --status active
-jules sessions list --status completed
-jules --format json sessions list
-```
-
-**Get session details:**
-
-```bash
-jules sessions get <session-id>
-jules --format json sessions get <session-id>
-```
-
-**Approve a pending plan:**
-
-```bash
-jules sessions approve <session-id>
-```
-
-### 3. Activity Management
-
-**List activities for a session:**
-
-```bash
-jules activities list <session-id>
-jules --format json activities list <session-id>
-jules --format table activities list <session-id>
-```
-
-### 4. Agent Interaction
-
-**Send a message to the agent:**
-
-```bash
-# Direct message
-jules agent send <session-id> "Your message here"
-
-# Piped message
-echo "Your message" | jules agent send <session-id>
-
-# From file
-cat message.txt | jules agent send <session-id>
-```
-
-### 5. Configuration
-
 **Initialize configuration:**
-
 ```bash
-jules config init
+junes config init
 ```
 
 This prompts for:
 - API key (hidden input)
 - Default output format (json/table/plain)
 
-## Output Format Selection
+## Debugging Rules
 
-Choose the appropriate output format based on the task:
+**When troubleshooting configuration or authentication issues:**
+
+1. **NEVER claim a bug exists without reading the actual code** - Use the Read tool to verify before claiming bugs
+2. **Always verify user's command examples** - They may be outdated or reference old command names ("jules" vs "junes")
+3. **Check actual file paths** - Use `ls` or `cat` commands to verify what exists
+4. **Environment variable JULES_API_KEY is correct** - It references the SERVICE name "Jules", not the CLI tool "junes"
+5. **Common non-bugs:**
+   - User's command uses "jules" instead of "junes" (rebranding confusion)
+   - User references old config path `~/.jules-cli/` (should be `~/.junes/`)
+   - Environment variable name seems "wrong" but is correct (JULES_API_KEY, not JUNES_API_KEY)
+
+`★ Insight ─────────────────────────────────────`
+**Fabrication prevention:** When debugging, agents feel compelled to "find the bug." If you think there's a bug, READ THE ACTUAL FILE first. Never claim a bug exists without verification.
+`─────────────────────────────────────────────────`
+
+## Authentication
+
+**API key priority order:**
+
+1. **CLI option** (highest): `junes --api-key "YOUR_KEY" sessions list`
+2. **Environment variable:** `export JULES_API_KEY="YOUR_KEY"`
+3. **Config file:** `junes config init` (stored at `~/.junes/config.toml`)
+
+**Config file location:** `~/.junes/config.toml`
+
+**View config:**
+```bash
+cat ~/.junes/config.toml
+```
+
+`★ Insight ─────────────────────────────────────`
+**Global option placement:** `--format` and `--api-key` are global options that go BEFORE the subcommand. Use `junes --format json sessions list` not `junes sessions list --format json`.
+`─────────────────────────────────────────────────`
+
+## Output Formats
 
 | Format | Use Case |
 |--------|----------|
-| `json` | When you need to parse, process, or extract data programmatically |
-| `table` | When displaying structured data to the user for review |
-| `plain` | When presenting human-readable summaries or simple text |
+| `json` | Parsing/processing data programmatically |
+| `table` | Displaying structured data for review |
+| `plain` | Human-readable summaries (default) |
 
-**Important:** The `--format` flag is a **global** flag and must be placed immediately after `jules` and before the subcommand.
-
-**Example workflow:**
-
+**Example:**
 ```bash
-# Get sources as JSON for parsing
-jules --format json sources list
-
-# Get session details for display
-jules --format table sessions get abc123
-
-# Check activity status programmatically
-jules --format json activities list abc123 | jq '.[0].status'
+junes --format json sources list    # Parse with jq
+junes --format table sessions list  # Review with eyes
+junes --format plain sessions get   # Simple display
 ```
 
-## API Key Handling
+## Session Management
 
-The API key can be provided in three ways (priority order):
-
-1. **CLI option:** `jules --api-key YOUR_KEY sources list`
-2. **Environment variable:** `export JULES_API_KEY=YOUR_KEY`
-3. **Config file:** `jules config init` (stored at `~/.jules-cli/config.toml`)
-
-If a command fails with authentication error, prompt the user to:
-- Run `jules config init` to set up configuration, OR
-- Set the `JULES_API_KEY` environment variable, OR
-- Provide the key via `--api-key` option
-
-## Verbose Mode
-
-Enable verbose logging to debug API requests:
-
+### List sessions
 ```bash
-jules --verbose sources list
+junes sessions list                                    # All sessions
+junes sessions list --status active                    # Filter by status
+junes sessions list --source sources/github/org/repo   # Filter by repository
+junes sessions list --page-size 50                     # Pagination
 ```
 
-This shows HTTP request details including headers, endpoints, and response status.
+### Create session
+```bash
+# Basic session
+junes sessions create <source-id>
+
+# With parameters
+junes sessions create <source-id> --parameter key=value
+junes sessions create <source-id> -p key1=value1 -p key2=value2
+```
+
+**Capture the returned session ID** for subsequent operations.
+
+### Get session details
+```bash
+junes sessions get <session-id>
+junes --format json sessions get <session-id>    # For parsing
+```
+
+### Approve session plan
+```bash
+junes sessions approve <session-id>
+```
+
+### Delete session
+```bash
+junes sessions delete <session-id>       # With confirmation
+```
+
+## Sources Management
+
+**List available sources:**
+```bash
+junes sources list
+junes --format json sources list
+junes --format table sources list
+```
+
+**Get source details:**
+```bash
+junes sources get <source-id>
+junes --format json sources get <source-id>
+```
+
+## Agent Interaction
+
+**Send message to session:**
+```bash
+# Direct message
+junes agent send <session-id> "Your message here"
+
+# Piped message
+echo "Your message" | junes agent send <session-id>
+
+# From file
+cat message.txt | junes agent send <session-id>
+```
+
+## Activity Management
+
+**List activities for a session:**
+```bash
+junes activities list <session-id>
+junes --format json activities list <session-id>
+junes --format table activities list <session-id>
+```
 
 ## Common Workflows
 
 ### Workflow 1: Create Session and Interact
-
 ```bash
 # 1. List available sources
-jules --format json sources list
+junes --format json sources list
 
-# 2. Create a session with a specific source
-jules --format json sessions create <source-id>
+# 2. Create a session
+junes --format json sessions create <source-id>
+# Save the returned session ID
 
 # 3. Check session status and plan
-jules sessions get <session-id>
+junes sessions get <session-id>
 
 # 4. Approve the plan if needed
-jules sessions approve <session-id>
+junes sessions approve <session-id>
 
 # 5. Monitor activities
-jules activities list <session-id>
+junes activities list <session-id>
 
-# 6. Send a message to the agent
-jules agent send <session-id> "What's the status?"
+# 6. Send message to agent
+junes agent send <session-id> "What's the status?"
 ```
 
 ### Workflow 2: Monitor Session Progress
-
 ```bash
-# Get session details
-jules --format json sessions get <session-id>
+# Get session details as JSON
+junes --format json sessions get <session-id>
 
-# List recent activities
-jules --format table activities list <session-id>
+# List activities as table
+junes --format table activities list <session-id>
 
-# If plan is pending, approve it
-jules sessions approve <session-id>
+# Approve if pending
+junes sessions approve <session-id>
 ```
 
-### Workflow 3: Batch Operations (Text Parsing Examples)
+### Workflow 3: Batch Operations with JSON Parsing
+```bash
+# Extract active session IDs using jq
+junes --format json sessions list --status active | jq -r '.[].id'
 
-While JSON is the preferred format for parsing, you can also use standard text processing tools:
+# Extract IDs using text parsing (if jq unavailable)
+junes sessions list --status active | awk '{print $3}' | grep -E '^[0-9]+$'
+```
+
+`★ Insight ─────────────────────────────────────`
+**Rate limiting:** Sending messages to many sessions quickly triggers 429 errors. Add delays (5s+) between sends when batching.
+`─────────────────────────────────────────────────`
+
+## Pagination Pattern
 
 ```bash
-# List all active sessions and extract IDs using JSON + jq
-jules --format json sessions list --status active | jq -r '.[].id'
+# Get first page
+junes sessions list --page-size 30 --format json > page1.json
 
-# List all active sessions and extract IDs using text parsing (awk/grep)
-# Assuming IDs are in the 3rd column of the default plain/table output
-jules sessions list --status active | awk '{print $3}' | grep -E '^[0-9]+$'
+# Extract nextPageToken and get next page
+TOKEN=$(jq -r '.nextPageToken' page1.json)
+junes sessions list --page-size 30 --page-token "$TOKEN" --format json
 ```
+
+## Verbose Mode
+
+Enable verbose logging to debug API requests:
+```bash
+junes --verbose sources list
+```
+
+Shows HTTP request details including headers, endpoints, and response status.
 
 ## Error Handling
 
-Common errors and solutions:
-
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `Authentication failed` | Invalid/missing API key | Check API key configuration |
+| `Authentication failed` | Invalid/missing API key | Run `junes config init` or set `JULES_API_KEY` |
 | `Resource not found` | Invalid source/session ID | Verify the ID exists |
 | `Rate limit exceeded` | Too many requests | Wait before retrying |
 | `Server error` | API is down | Retry later |
-| `Error: No such option: --format` | Flag in wrong position | Place `--format` BEFORE the subcommand |
+| `API key not found` | No key configured | Provide via `--api-key`, env var, or config |
+
+## Common Mistakes
+
+| Mistake | Fix |
+|---------|-----|
+| Wrong `--format` placement | Global options go before subcommand: `junes --format json sessions list` |
+| Forgetting `--status` filter | Use filters to narrow results: `--status active` |
+| No delays when batch messaging | Add 5s+ delays to avoid 429 rate limit errors |
+| Not using JSON for parsing | Use `--format json` with `jq` for programmatic access |
+| Missing session ID after create | Capture and save the returned ID from `sessions create` |
+| **Trusting user's command examples** | **Verify before using - user may reference old "jules" command** |
+| **Claiming bugs without reading code** | **ALWAYS Read tool to verify before claiming bugs exist** |
+| **Confusing CLI vs service names** | **CLI is "junes", service is "Jules API", env var is JULES_API_KEY** |
+
+## Red Flags - STOP and Verify
+
+You are about to make a mistake if:
+
+- **About to claim "there's a bug in the code"** → Read the file first
+- **User's command example uses "jules"** → Correct to "junes" (rebranding)
+- **About to suggest changing env var from JULES_API_KEY** → This is CORRECT (service name)
+- **User says config is at ~/.jules-cli/** → Correct to ~/.junes/ (rebranded path)
+- **About to modify code without reading it** → Use Read tool to verify actual contents
+
+**All of these mean: Stop. Read actual files. Verify. Then respond.**
 
 ## Best Practices
 
-1. **Place global flags correctly:** Always use `jules --format json <subcommand>` not `jules <subcommand> --format json`.
+1. **Place global flags correctly:** `junes --format json <subcommand>` not `junes <subcommand> --format json`
 
-2. **Capture session IDs:** When creating sessions, save the returned ID for subsequent operations.
+2. **Capture session IDs:** Save the returned ID when creating sessions
 
-3. **Check session status before acting:** Use `jules sessions get` to verify state before approving or sending messages.
+3. **Check session status before acting:** Use `junes sessions get` to verify state
 
-4. **Use verbose mode for debugging:** Add `--verbose` when troubleshooting API issues.
+4. **Use verbose mode for debugging:** Add `--verbose` when troubleshooting
 
-5. **Filter sessions by status:** Use `--status` flag to list only active/completed sessions.
+5. **Use appropriate output format:** JSON for parsing, table for review, plain for simple display
 
-6. **Use appropriate output format:** Match the format to your use case (json for parsing, table for review, plain for simple display).
+6. **Add delays when batching:** Prevent rate limiting with `sleep 5` between operations

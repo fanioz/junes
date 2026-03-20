@@ -141,6 +141,36 @@ class TestSessionsListCommand:
         assert result.exit_code == 0
         assert '"sessions"' in result.output
 
+    @responses.activate
+    def test_sessions_list_with_source_filter(self):
+        """sessions list --source should filter results client-side."""
+        responses.get(
+            f"{BASE_URL}/sessions",
+            json={
+                "sessions": [
+                    {
+                        "id": "sess1",
+                        "title": "Sess 1",
+                        "sourceContext": {"source": "src1"}
+                    },
+                    {
+                        "id": "sess2",
+                        "title": "Sess 2",
+                        "sourceContext": {"source": "src2"}
+                    }
+                ]
+            },
+            status=200,
+        )
+
+        runner = CliRunner()
+        # Filter for src1
+        result = runner.invoke(cli, ["--api-key", "test-key", "sessions", "list", "--source", "src1"])
+
+        assert result.exit_code == 0
+        assert "sess1" in result.output
+        assert "sess2" not in result.output
+
 
 class TestSessionsGetCommand:
     """Tests for 'sessions get' command."""

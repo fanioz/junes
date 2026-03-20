@@ -225,6 +225,51 @@ class TestListSources:
         assert result == {"sources": []}
 
 
+class TestGetSource:
+    """Tests for get_source method."""
+
+    @responses.activate
+    def test_get_source_returns_source(self):
+        """get_source should GET from /sources/{source_id}."""
+        responses.get(
+            f"{BASE_URL}/sources/src1",
+            json={"id": "src1", "name": "Source 1"},
+            status=200,
+        )
+
+        client = JulesAPIClient(api_key="test-key", verbose=False)
+        result = client.get_source("src1")
+
+        assert result == {"id": "src1", "name": "Source 1"}
+
+    @responses.activate
+    def test_get_source_handles_prefix(self):
+        """get_source should handle 'sources/' prefix in source_id."""
+        responses.get(
+            f"{BASE_URL}/sources/src1",
+            json={"id": "src1", "name": "Source 1"},
+            status=200,
+        )
+
+        client = JulesAPIClient(api_key="test-key", verbose=False)
+        result = client.get_source("sources/src1")
+
+        assert result == {"id": "src1", "name": "Source 1"}
+
+    @responses.activate
+    def test_get_source_not_found(self):
+        """get_source should raise ResourceNotFoundError on 404."""
+        responses.get(
+            f"{BASE_URL}/sources/nonexistent",
+            json={"error": "Not found"},
+            status=404,
+        )
+
+        client = JulesAPIClient(api_key="test-key", verbose=False)
+        with pytest.raises(ResourceNotFoundError):
+            client.get_source("nonexistent")
+
+
 class TestCreateSession:
     """Tests for create_session method."""
 

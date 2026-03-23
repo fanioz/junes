@@ -11,7 +11,6 @@ import sys
 import click
 
 from junes import __version__
-from junes.config import ConfigManager
 from junes.exceptions import ConfigurationError, JulesAPIError
 
 
@@ -52,8 +51,14 @@ def cli(ctx, api_key, format, verbose):
     ctx.obj["verbose"] = verbose
 
     # Get the actual API key using priority: CLI > ENV > Config
+    # Only load config if we actually need an API key
+    if ctx.invoked_subcommand is None:
+        click.echo(ctx.get_help())
+        sys.exit(0)
+
     if api_key is None:
         try:
+            from junes.config import ConfigManager
             config_manager = ConfigManager()
             actual_api_key = config_manager.get_api_key(cli_arg_key=None)
             ctx.obj["actual_api_key"] = actual_api_key
@@ -62,10 +67,6 @@ def cli(ctx, api_key, format, verbose):
             ctx.obj["actual_api_key"] = None
     else:
         ctx.obj["actual_api_key"] = api_key
-
-    if ctx.invoked_subcommand is None:
-        click.echo(ctx.get_help())
-        sys.exit(0)
 
 
 
@@ -370,6 +371,7 @@ def config(ctx):
 @click.pass_context
 def config_init(ctx, api_key, format):
     """Initialize configuration file."""
+    from junes.config import ConfigManager
     try:
         config_manager = ConfigManager()
         config_manager.init_config(api_key=api_key, format=format.lower())

@@ -6,21 +6,6 @@ from pathlib import Path
 
 from junes.exceptions import ConfigurationError
 
-# Handle TOML for different Python versions
-if sys.version_info >= (3, 11):
-    import tomllib
-else:
-    try:
-        import tomli as tomllib
-    except ImportError:
-        import tomli as tomllib
-
-# For writing TOML (not in stdlib yet)
-try:
-    import tomli_w
-except ImportError:
-    tomli_w = None
-
 
 class ConfigManager:
     """Manages configuration for the Jules CLI."""
@@ -51,6 +36,11 @@ class ConfigManager:
 
         # Write config file
         config_data = {"api_key": api_key, "format": format}
+
+        try:
+            import tomli_w
+        except ImportError:
+            tomli_w = None
 
         if tomli_w is not None:
             with open(self.config_file, "wb") as f:
@@ -83,6 +73,14 @@ class ConfigManager:
         """
         if not self.config_file.exists():
             raise ConfigurationError("Configuration file not found. Run 'jules config init' first.")
+
+        if sys.version_info >= (3, 11):
+            import tomllib
+        else:
+            try:
+                import tomli as tomllib
+            except ImportError:
+                import tomli as tomllib
 
         try:
             with open(self.config_file, "rb") as f:
